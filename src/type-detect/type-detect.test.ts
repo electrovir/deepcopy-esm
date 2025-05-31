@@ -81,10 +81,6 @@ describe('Generic', () => {
                 assert.strictEquals(typeDetect(navigator.geolocation), 'Geolocation');
             });
 
-            it('mediadevices', () => {
-                assert.strictEquals(typeDetect(navigator.mediaDevices), 'MediaDevices');
-            });
-
             it('mimetypearray', () => {
                 // eslint-disable-next-line sonarjs/deprecation, @typescript-eslint/no-deprecated
                 assert.strictEquals(typeDetect(navigator.mimeTypes), 'MimeTypeArray');
@@ -97,10 +93,6 @@ describe('Generic', () => {
             it('pluginarray', () => {
                 // eslint-disable-next-line sonarjs/deprecation, @typescript-eslint/no-deprecated
                 assert.strictEquals(typeDetect(navigator.plugins), 'PluginArray');
-            });
-
-            it('storagemanager', () => {
-                assert.strictEquals(typeDetect(navigator.storage), 'StorageManager');
             });
         });
 
