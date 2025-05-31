@@ -27,9 +27,8 @@
  *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  *     IN THE SOFTWARE.
  */
-
-import typeDetect from 'type-detect/index.js';
 import {isBuffer} from './buffer.js';
+import {typeDetect} from './type-detect/type-detect.js';
 
 // NOTE: for the file size optimization
 

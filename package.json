@@ -1,6 +1,6 @@
 {
     "name": "deepcopy-esm",
-    "version": "2.1.0",
+    "version": "2.1.0-fix1",
     "description": "ESM compatible deepcopy",
     "keywords": [
         "deep",
@@ -42,11 +42,9 @@
         "test:lint": "virmator lint",
         "test:spelling": "virmator spellcheck"
     },
-    "dependencies": {
-        "type-detect": "^4.1.0"
-    },
     "devDependencies": {
         "@augment-vir/assert": "^31.22.0",
+        "@augment-vir/common": "^31.23.0",
         "@augment-vir/test": "^31.22.0",
         "@eslint/eslintrc": "^3.3.1",
         "@eslint/js": "^9.28.0",

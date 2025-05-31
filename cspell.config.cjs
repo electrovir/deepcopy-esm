@@ -9,6 +9,13 @@ module.exports = {
         ...baseConfig.words,
         'customizer',
         'deepcopy',
+        'domparser',
+        'foobarbaz',
+        'luer',
+        'mediadevices',
+        'mimetypearray',
+        'pluginarray',
         'sasa',
+        'storagemanager',
     ],
 };
