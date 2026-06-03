@@ -70,7 +70,11 @@ describe(getKeys.name, () => {
         ]);
     });
     it('should get keys from Object', () => {
-        const value = {'0': 1, '1': 2, '2': 3};
+        const value = {
+            '0': 1,
+            '1': 2,
+            '2': 3,
+        };
 
         assert.deepEquals(getKeys(value, detectType(value)), [
             '0',
@@ -170,7 +174,11 @@ describe(getValue.name, () => {
         assert.strictEquals(getValue(value, 2, detectType(value)), 3);
     });
     it('should get value from Object', () => {
-        const value = {'0': 1, '1': 2, '2': 3};
+        const value = {
+            '0': 1,
+            '1': 2,
+            '2': 3,
+        };
 
         assert.strictEquals(getValue(value, '0', detectType(value)), 1);
         assert.strictEquals(getValue(value, '1', detectType(value)), 2);
@@ -223,7 +231,11 @@ describe(setValue.name, () => {
         setValue(value, '1', 2, detectType(value));
         setValue(value, '2', 3, detectType(value));
 
-        assert.deepEquals(value, {'0': 1, '1': 2, '2': 3});
+        assert.deepEquals(value, {
+            '0': 1,
+            '1': 2,
+            '2': 3,
+        });
     });
     it('should set value to Set', () => {
         const value = new Set<number>();

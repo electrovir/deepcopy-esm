@@ -91,46 +91,40 @@ export function typeDetect(obj: unknown): string {
     const typeofObj = typeof obj;
     if (typeofObj !== 'object') {
         return typeofObj;
-    }
-
-    /* ! Speed optimization
-     * Pre:
-     *   null               x 28,645,765 ops/sec ±1.17% (82 runs sampled)
-     * Post:
-     *   null               x 36,428,962 ops/sec ±1.37% (84 runs sampled)
-     */
-    if (obj === null) {
+        /* ! Speed optimization
+         * Pre:
+         *   null               x 28,645,765 ops/sec ±1.17% (82 runs sampled)
+         * Post:
+         *   null               x 36,428,962 ops/sec ±1.37% (84 runs sampled)
+         */
+    } else if (obj === null) {
         return 'null';
-    }
-
-    /* ! Spec Conformance
-     * Test: `Object.prototype.toString.call(window)``
-     *  - Node === "[object global]"
-     *  - Chrome === "[object global]"
-     *  - Firefox === "[object Window]"
-     *  - PhantomJS === "[object Window]"
-     *  - Safari === "[object Window]"
-     *  - IE 11 === "[object Window]"
-     *  - IE Edge === "[object Window]"
-     * Test: `Object.prototype.toString.call(this)``
-     *  - Chrome Worker === "[object global]"
-     *  - Firefox Worker === "[object DedicatedWorkerGlobalScope]"
-     *  - Safari Worker === "[object DedicatedWorkerGlobalScope]"
-     *  - IE 11 Worker === "[object WorkerGlobalScope]"
-     *  - IE Edge Worker === "[object WorkerGlobalScope]"
-     */
-    if (obj === globalObject) {
+        /* ! Spec Conformance
+         * Test: `Object.prototype.toString.call(window)``
+         *  - Node === "[object global]"
+         *  - Chrome === "[object global]"
+         *  - Firefox === "[object Window]"
+         *  - PhantomJS === "[object Window]"
+         *  - Safari === "[object Window]"
+         *  - IE 11 === "[object Window]"
+         *  - IE Edge === "[object Window]"
+         * Test: `Object.prototype.toString.call(this)``
+         *  - Chrome Worker === "[object global]"
+         *  - Firefox Worker === "[object DedicatedWorkerGlobalScope]"
+         *  - Safari Worker === "[object DedicatedWorkerGlobalScope]"
+         *  - IE 11 Worker === "[object WorkerGlobalScope]"
+         *  - IE Edge Worker === "[object WorkerGlobalScope]"
+         */
+    } else if (obj === globalObject) {
         return 'global';
-    }
-
-    /* ! Speed optimization
-     * Pre:
-     *   array literal      x 2,888,352 ops/sec ±0.67% (82 runs sampled)
-     * Post:
-     *   array literal      x 22,479,650 ops/sec ±0.96% (81 runs sampled)
-     */
-    // eslint-disable-next-line sonarjs/no-in-misuse
-    if (Array.isArray(obj) && (!symbolToStringTagExists || !(Symbol.toStringTag in obj))) {
+        /* ! Speed optimization
+         * Pre:
+         *   array literal      x 2,888,352 ops/sec ±0.67% (82 runs sampled)
+         * Post:
+         *   array literal      x 22,479,650 ops/sec ±0.96% (81 runs sampled)
+         */
+        // eslint-disable-next-line sonarjs/no-in-misuse
+    } else if (Array.isArray(obj) && (!symbolToStringTagExists || !(Symbol.toStringTag in obj))) {
         return 'Array';
     }
 
@@ -146,28 +140,29 @@ export function typeDetect(obj: unknown): string {
          */
         if (typeof (window as any).location === 'object' && obj === (window as any).location) {
             return 'Location';
-        }
-
-        /* ! Spec Conformance
-         * (https://html.spec.whatwg.org/#document)
-         * WhatWG HTML$3.1.1 - The `Document` object
-         * Note: Most browsers currently adhere to the W3C DOM Level 2 spec
-         *       (https://www.w3.org/TR/DOM-Level-2-HTML/html.html#ID-26809268)
-         *       which suggests that browsers should use HTMLTableCellElement for
-         *       both TD and TH elements. WhatWG separates these.
-         *       WhatWG HTML states:
-         *         > For historical reasons, Window objects must also have a
-         *         > writable, configurable, non-enumerable property named
-         *         > HTMLDocument whose value is the Document interface object.
-         * Test: `Object.prototype.toString.call(document)``
-         *  - Chrome === "[object HTMLDocument]"
-         *  - Firefox === "[object HTMLDocument]"
-         *  - Safari === "[object HTMLDocument]"
-         *  - IE <=10 === "[object Document]"
-         *  - IE 11 === "[object HTMLDocument]"
-         *  - IE Edge <=13 === "[object HTMLDocument]"
-         */
-        if (typeof (window as any).document === 'object' && obj === (window as any).document) {
+            /* ! Spec Conformance
+             * (https://html.spec.whatwg.org/#document)
+             * WhatWG HTML$3.1.1 - The `Document` object
+             * Note: Most browsers currently adhere to the W3C DOM Level 2 spec
+             *       (https://www.w3.org/TR/DOM-Level-2-HTML/html.html#ID-26809268)
+             *       which suggests that browsers should use HTMLTableCellElement for
+             *       both TD and TH elements. WhatWG separates these.
+             *       WhatWG HTML states:
+             *         > For historical reasons, Window objects must also have a
+             *         > writable, configurable, non-enumerable property named
+             *         > HTMLDocument whose value is the Document interface object.
+             * Test: `Object.prototype.toString.call(document)``
+             *  - Chrome === "[object HTMLDocument]"
+             *  - Firefox === "[object HTMLDocument]"
+             *  - Safari === "[object HTMLDocument]"
+             *  - IE <=10 === "[object Document]"
+             *  - IE 11 === "[object HTMLDocument]"
+             *  - IE Edge <=13 === "[object HTMLDocument]"
+             */
+        } else if (
+            typeof (window as any).document === 'object' &&
+            obj === (window as any).document
+        ) {
             return 'Document';
         }
 
@@ -183,15 +178,13 @@ export function typeDetect(obj: unknown): string {
                 obj === (window as any).navigator.mimeTypes
             ) {
                 return 'MimeTypeArray';
-            }
-
-            /* ! Spec Conformance
-             * (https://html.spec.whatwg.org/multipage/webappapis.html#pluginarray)
-             * WhatWG HTML$8.6.1.5 - Plugins - Interface PluginArray
-             * Test: `Object.prototype.toString.call(navigator.plugins)``
-             *  - IE <=10 === "[object MSPluginsCollection]"
-             */
-            if (
+                /* ! Spec Conformance
+                 * (https://html.spec.whatwg.org/multipage/webappapis.html#pluginarray)
+                 * WhatWG HTML$8.6.1.5 - Plugins - Interface PluginArray
+                 * Test: `Object.prototype.toString.call(navigator.plugins)``
+                 *  - IE <=10 === "[object MSPluginsCollection]"
+                 */
+            } else if (
                 typeof (window as any).navigator.plugins === 'object' &&
                 obj === (window as any).navigator.plugins
             ) {
@@ -212,37 +205,33 @@ export function typeDetect(obj: unknown): string {
              */
             if ((obj as any).tagName === 'BLOCKQUOTE') {
                 return 'HTMLQuoteElement';
-            }
-
-            /* ! Spec Conformance
-             * (https://html.spec.whatwg.org/#htmltabledatacellelement)
-             * WhatWG HTML$4.9.9 - The `td` element - Interface `HTMLTableDataCellElement`
-             * Note: Most browsers currently adhere to the W3C DOM Level 2 spec
-             *       (https://www.w3.org/TR/DOM-Level-2-HTML/html.html#ID-82915075)
-             *       which suggests that browsers should use HTMLTableCellElement for
-             *       both TD and TH elements. WhatWG separates these.
-             * Test: Object.prototype.toString.call(document.createElement('td'))
-             *  - Chrome === "[object HTMLTableCellElement]"
-             *  - Firefox === "[object HTMLTableCellElement]"
-             *  - Safari === "[object HTMLTableCellElement]"
-             */
-            if ((obj as any).tagName === 'TD') {
+                /* ! Spec Conformance
+                 * (https://html.spec.whatwg.org/#htmltabledatacellelement)
+                 * WhatWG HTML$4.9.9 - The `td` element - Interface `HTMLTableDataCellElement`
+                 * Note: Most browsers currently adhere to the W3C DOM Level 2 spec
+                 *       (https://www.w3.org/TR/DOM-Level-2-HTML/html.html#ID-82915075)
+                 *       which suggests that browsers should use HTMLTableCellElement for
+                 *       both TD and TH elements. WhatWG separates these.
+                 * Test: Object.prototype.toString.call(document.createElement('td'))
+                 *  - Chrome === "[object HTMLTableCellElement]"
+                 *  - Firefox === "[object HTMLTableCellElement]"
+                 *  - Safari === "[object HTMLTableCellElement]"
+                 */
+            } else if ((obj as any).tagName === 'TD') {
                 return 'HTMLTableDataCellElement';
-            }
-
-            /* ! Spec Conformance
-             * (https://html.spec.whatwg.org/#htmltableheadercellelement)
-             * WhatWG HTML$4.9.9 - The `td` element - Interface `HTMLTableHeaderCellElement`
-             * Note: Most browsers currently adhere to the W3C DOM Level 2 spec
-             *       (https://www.w3.org/TR/DOM-Level-2-HTML/html.html#ID-82915075)
-             *       which suggests that browsers should use HTMLTableCellElement for
-             *       both TD and TH elements. WhatWG separates these.
-             * Test: Object.prototype.toString.call(document.createElement('th'))
-             *  - Chrome === "[object HTMLTableCellElement]"
-             *  - Firefox === "[object HTMLTableCellElement]"
-             *  - Safari === "[object HTMLTableCellElement]"
-             */
-            if ((obj as any).tagName === 'TH') {
+                /* ! Spec Conformance
+                 * (https://html.spec.whatwg.org/#htmltableheadercellelement)
+                 * WhatWG HTML$4.9.9 - The `td` element - Interface `HTMLTableHeaderCellElement`
+                 * Note: Most browsers currently adhere to the W3C DOM Level 2 spec
+                 *       (https://www.w3.org/TR/DOM-Level-2-HTML/html.html#ID-82915075)
+                 *       which suggests that browsers should use HTMLTableCellElement for
+                 *       both TD and TH elements. WhatWG separates these.
+                 * Test: Object.prototype.toString.call(document.createElement('th'))
+                 *  - Chrome === "[object HTMLTableCellElement]"
+                 *  - Firefox === "[object HTMLTableCellElement]"
+                 *  - Safari === "[object HTMLTableCellElement]"
+                 */
+            } else if ((obj as any).tagName === 'TH') {
                 return 'HTMLTableHeaderCellElement';
             }
         }
@@ -286,128 +275,104 @@ export function typeDetect(obj: unknown): string {
      */
     if (objPrototype === RegExp.prototype) {
         return 'RegExp';
-    }
-
-    /* ! Speed optimization
-     * Pre:
-     *   date               x 2,130,074 ops/sec ±4.42% (68 runs sampled)
-     * Post:
-     *   date               x 3,953,779 ops/sec ±1.35% (77 runs sampled)
-     */
-    if (objPrototype === Date.prototype) {
+        /* ! Speed optimization
+         * Pre:
+         *   date               x 2,130,074 ops/sec ±4.42% (68 runs sampled)
+         * Post:
+         *   date               x 3,953,779 ops/sec ±1.35% (77 runs sampled)
+         */
+    } else if (objPrototype === Date.prototype) {
         return 'Date';
-    }
-
-    /* ! Spec Conformance
-     * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-promise.prototype-@@tostringtag)
-     * ES6$25.4.5.4 - Promise.prototype[@@toStringTag] should be "Promise":
-     * Test: `Object.prototype.toString.call(Promise.resolve())``
-     *  - Chrome <=47 === "[object Object]"
-     *  - Edge <=20 === "[object Object]"
-     *  - Firefox 29-Latest === "[object Promise]"
-     *  - Safari 7.1-Latest === "[object Promise]"
-     */
-    if (promiseExists && objPrototype === Promise.prototype) {
+        /* ! Spec Conformance
+         * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-promise.prototype-@@tostringtag)
+         * ES6$25.4.5.4 - Promise.prototype[@@toStringTag] should be "Promise":
+         * Test: `Object.prototype.toString.call(Promise.resolve())``
+         *  - Chrome <=47 === "[object Object]"
+         *  - Edge <=20 === "[object Object]"
+         *  - Firefox 29-Latest === "[object Promise]"
+         *  - Safari 7.1-Latest === "[object Promise]"
+         */
+    } else if (promiseExists && objPrototype === Promise.prototype) {
         return 'Promise';
-    }
-
-    /* ! Speed optimization
-     * Pre:
-     *   set                x 2,222,186 ops/sec ±1.31% (82 runs sampled)
-     * Post:
-     *   set                x 4,545,879 ops/sec ±1.13% (83 runs sampled)
-     */
-    if (setExists && objPrototype === Set.prototype) {
+        /* ! Speed optimization
+         * Pre:
+         *   set                x 2,222,186 ops/sec ±1.31% (82 runs sampled)
+         * Post:
+         *   set                x 4,545,879 ops/sec ±1.13% (83 runs sampled)
+         */
+    } else if (setExists && objPrototype === Set.prototype) {
         return 'Set';
-    }
-
-    /* ! Speed optimization
-     * Pre:
-     *   map                x 2,396,842 ops/sec ±1.59% (81 runs sampled)
-     * Post:
-     *   map                x 4,183,945 ops/sec ±6.59% (82 runs sampled)
-     */
-    if (mapExists && objPrototype === Map.prototype) {
+        /* ! Speed optimization
+         * Pre:
+         *   map                x 2,396,842 ops/sec ±1.59% (81 runs sampled)
+         * Post:
+         *   map                x 4,183,945 ops/sec ±6.59% (82 runs sampled)
+         */
+    } else if (mapExists && objPrototype === Map.prototype) {
         return 'Map';
-    }
-
-    /* ! Speed optimization
-     * Pre:
-     *   weakset            x 1,323,220 ops/sec ±2.17% (76 runs sampled)
-     * Post:
-     *   weakset            x 4,237,510 ops/sec ±2.01% (77 runs sampled)
-     */
-    if (weakSetExists && objPrototype === WeakSet.prototype) {
+        /* ! Speed optimization
+         * Pre:
+         *   weakset            x 1,323,220 ops/sec ±2.17% (76 runs sampled)
+         * Post:
+         *   weakset            x 4,237,510 ops/sec ±2.01% (77 runs sampled)
+         */
+    } else if (weakSetExists && objPrototype === WeakSet.prototype) {
         return 'WeakSet';
-    }
-
-    /* ! Speed optimization
-     * Pre:
-     *   weakmap            x 1,500,260 ops/sec ±2.02% (78 runs sampled)
-     * Post:
-     *   weakmap            x 3,881,384 ops/sec ±1.45% (82 runs sampled)
-     */
-    if (weakMapExists && objPrototype === WeakMap.prototype) {
+        /* ! Speed optimization
+         * Pre:
+         *   weakmap            x 1,500,260 ops/sec ±2.02% (78 runs sampled)
+         * Post:
+         *   weakmap            x 3,881,384 ops/sec ±1.45% (82 runs sampled)
+         */
+    } else if (weakMapExists && objPrototype === WeakMap.prototype) {
         return 'WeakMap';
-    }
-
-    /* ! Spec Conformance
-     * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-dataview.prototype-@@tostringtag)
-     * ES6$24.2.4.21 - DataView.prototype[@@toStringTag] should be "DataView":
-     * Test: `Object.prototype.toString.call(new DataView(new ArrayBuffer(1)))``
-     *  - Edge <=13 === "[object Object]"
-     */
-    if (dataViewExists && objPrototype === DataView.prototype) {
+        /* ! Spec Conformance
+         * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-dataview.prototype-@@tostringtag)
+         * ES6$24.2.4.21 - DataView.prototype[@@toStringTag] should be "DataView":
+         * Test: `Object.prototype.toString.call(new DataView(new ArrayBuffer(1)))``
+         *  - Edge <=13 === "[object Object]"
+         */
+    } else if (dataViewExists && objPrototype === DataView.prototype) {
         return 'DataView';
-    }
-
-    /* ! Spec Conformance
-     * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-%mapiteratorprototype%-@@tostringtag)
-     * ES6$23.1.5.2.2 - %MapIteratorPrototype%[@@toStringTag] should be "Map Iterator":
-     * Test: `Object.prototype.toString.call(new Map().entries())``
-     *  - Edge <=13 === "[object Object]"
-     */
-    if (mapExists && objPrototype === mapIteratorPrototype) {
+        /* ! Spec Conformance
+         * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-%mapiteratorprototype%-@@tostringtag)
+         * ES6$23.1.5.2.2 - %MapIteratorPrototype%[@@toStringTag] should be "Map Iterator":
+         * Test: `Object.prototype.toString.call(new Map().entries())``
+         *  - Edge <=13 === "[object Object]"
+         */
+    } else if (mapExists && objPrototype === mapIteratorPrototype) {
         return 'Map Iterator';
-    }
-
-    /* ! Spec Conformance
-     * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-%setiteratorprototype%-@@tostringtag)
-     * ES6$23.2.5.2.2 - %SetIteratorPrototype%[@@toStringTag] should be "Set Iterator":
-     * Test: `Object.prototype.toString.call(new Set().entries())``
-     *  - Edge <=13 === "[object Object]"
-     */
-    if (setExists && objPrototype === setIteratorPrototype) {
+        /* ! Spec Conformance
+         * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-%setiteratorprototype%-@@tostringtag)
+         * ES6$23.2.5.2.2 - %SetIteratorPrototype%[@@toStringTag] should be "Set Iterator":
+         * Test: `Object.prototype.toString.call(new Set().entries())``
+         *  - Edge <=13 === "[object Object]"
+         */
+    } else if (setExists && objPrototype === setIteratorPrototype) {
         return 'Set Iterator';
-    }
-
-    /* ! Spec Conformance
-     * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-%arrayiteratorprototype%-@@tostringtag)
-     * ES6$22.1.5.2.2 - %ArrayIteratorPrototype%[@@toStringTag] should be "Array Iterator":
-     * Test: `Object.prototype.toString.call([][Symbol.iterator]())``
-     *  - Edge <=13 === "[object Object]"
-     */
-    if (arrayIteratorExists && objPrototype === arrayIteratorPrototype) {
+        /* ! Spec Conformance
+         * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-%arrayiteratorprototype%-@@tostringtag)
+         * ES6$22.1.5.2.2 - %ArrayIteratorPrototype%[@@toStringTag] should be "Array Iterator":
+         * Test: `Object.prototype.toString.call([][Symbol.iterator]())``
+         *  - Edge <=13 === "[object Object]"
+         */
+    } else if (arrayIteratorExists && objPrototype === arrayIteratorPrototype) {
         return 'Array Iterator';
-    }
-
-    /* ! Spec Conformance
-     * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-%stringiteratorprototype%-@@tostringtag)
-     * ES6$21.1.5.2.2 - %StringIteratorPrototype%[@@toStringTag] should be "String Iterator":
-     * Test: `Object.prototype.toString.call(''[Symbol.iterator]())``
-     *  - Edge <=13 === "[object Object]"
-     */
-    if (stringIteratorExists && objPrototype === stringIteratorPrototype) {
+        /* ! Spec Conformance
+         * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-%stringiteratorprototype%-@@tostringtag)
+         * ES6$21.1.5.2.2 - %StringIteratorPrototype%[@@toStringTag] should be "String Iterator":
+         * Test: `Object.prototype.toString.call(''[Symbol.iterator]())``
+         *  - Edge <=13 === "[object Object]"
+         */
+    } else if (stringIteratorExists && objPrototype === stringIteratorPrototype) {
         return 'String Iterator';
-    }
-
-    /* ! Speed optimization
-     * Pre:
-     *   object from null   x 2,424,320 ops/sec ±1.67% (76 runs sampled)
-     * Post:
-     *   object from null   x 5,838,000 ops/sec ±0.99% (84 runs sampled)
-     */
-    if (objPrototype === null) {
+        /* ! Speed optimization
+         * Pre:
+         *   object from null   x 2,424,320 ops/sec ±1.67% (76 runs sampled)
+         * Post:
+         *   object from null   x 5,838,000 ops/sec ±0.99% (84 runs sampled)
+         */
+    } else if (objPrototype === null) {
         return 'Object';
     }
 

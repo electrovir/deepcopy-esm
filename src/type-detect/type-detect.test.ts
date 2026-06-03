@@ -82,7 +82,7 @@ describe('Generic', () => {
             });
 
             it('mimetypearray', () => {
-                // eslint-disable-next-line sonarjs/deprecation, @typescript-eslint/no-deprecated
+                // eslint-disable-next-line @typescript-eslint/no-deprecated
                 assert.strictEquals(typeDetect(navigator.mimeTypes), 'MimeTypeArray');
             });
 
@@ -91,7 +91,7 @@ describe('Generic', () => {
             });
 
             it('pluginarray', () => {
-                // eslint-disable-next-line sonarjs/deprecation, @typescript-eslint/no-deprecated
+                // eslint-disable-next-line @typescript-eslint/no-deprecated
                 assert.strictEquals(typeDetect(navigator.plugins), 'PluginArray');
             });
         });

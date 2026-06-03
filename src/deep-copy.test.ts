@@ -489,7 +489,11 @@ describe(deepCopy.name, () => {
         });
 
         it('can copy Object', () => {
-            const data = {a: 1, b: 2, c: 3};
+            const data = {
+                a: 1,
+                b: 2,
+                c: 3,
+            };
             const result = deepCopy(data);
 
             assert.notStrictEquals(result, data);
@@ -564,9 +568,21 @@ describe(deepCopy.name, () => {
 
             it('Object', () => {
                 const result = deepCopy({
-                    a: {a: 1, b: 2, c: 3},
-                    b: {d: 4, e: 5, f: 6},
-                    c: {g: 7, h: 8, i: 9},
+                    a: {
+                        a: 1,
+                        b: 2,
+                        c: 3,
+                    },
+                    b: {
+                        d: 4,
+                        e: 5,
+                        f: 6,
+                    },
+                    c: {
+                        g: 7,
+                        h: 8,
+                        i: 9,
+                    },
                 });
 
                 assert.strictEquals(result.a.a, 1);
@@ -587,19 +603,37 @@ describe(deepCopy.name, () => {
 
                 const result = deepCopy({
                     [s1]: [
-                        {a: 1},
-                        {b: 2},
-                        {c: 3},
+                        {
+                            a: 1,
+                        },
+                        {
+                            b: 2,
+                        },
+                        {
+                            c: 3,
+                        },
                     ],
                     [s2]: [
-                        {a: 1},
-                        {b: 2},
-                        {c: 3},
+                        {
+                            a: 1,
+                        },
+                        {
+                            b: 2,
+                        },
+                        {
+                            c: 3,
+                        },
                     ],
                     [s3]: [
-                        {a: 1},
-                        {b: 2},
-                        {c: 3},
+                        {
+                            a: 1,
+                        },
+                        {
+                            b: 2,
+                        },
+                        {
+                            c: 3,
+                        },
                     ],
                 });
 
@@ -619,15 +653,27 @@ describe(deepCopy.name, () => {
                     new Map([
                         [
                             1,
-                            {a: 1, b: 2, c: 3},
+                            {
+                                a: 1,
+                                b: 2,
+                                c: 3,
+                            },
                         ],
                         [
                             2,
-                            {a: 4, b: 5, c: 6},
+                            {
+                                a: 4,
+                                b: 5,
+                                c: 6,
+                            },
                         ],
                         [
                             3,
-                            {a: 7, b: 8, c: 9},
+                            {
+                                a: 7,
+                                b: 8,
+                                c: 9,
+                            },
                         ],
                     ]),
                 );
@@ -727,8 +773,14 @@ describe(deepCopy.name, () => {
             }
 
             const result = deepCopy([
-                {a: fn, b: 'asdf'},
-                {x: fn, y: 'asdf'},
+                {
+                    a: fn,
+                    b: 'asdf',
+                },
+                {
+                    x: fn,
+                    y: 'asdf',
+                },
             ]);
 
             assert.strictEquals(result[0]?.a, fn);
@@ -742,7 +794,7 @@ describe(deepCopy.name, () => {
                 a: 1,
                 b: 2,
                 c: 3,
-                d: function (): void {
+                d(): void {
                     return;
                 },
                 e: 4,

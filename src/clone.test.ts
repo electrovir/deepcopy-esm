@@ -333,7 +333,12 @@ describe(clone.name, () => {
                     3,
                 ],
             ])[Symbol.iterator]();
-            const result = clone(data, detectType(data)) as IterableIterator<[number, number]>;
+            const result = clone(data, detectType(data)) as IterableIterator<
+                [
+                    number,
+                    number,
+                ]
+            >;
 
             assert.strictEquals(result, data);
         });
@@ -481,7 +486,11 @@ describe(clone.name, () => {
             assert.strictEquals(result.size, 0);
         });
         it('Object', () => {
-            const data = {a: 1, b: 2, c: 3};
+            const data = {
+                a: 1,
+                b: 2,
+                c: 3,
+            };
             const result = clone(data, detectType(data)) as Record<string, number>;
 
             assert.instanceOf(result, Object);
